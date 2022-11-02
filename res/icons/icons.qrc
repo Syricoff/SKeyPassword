@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>icons.qrc</file>
+    <file>filter.svg</file>
+    <file>eye-outline.svg</file>
+    <file>eye-off-outline.svg</file>
+    <file>content-copy.svg</file>
+    <file>icon.png</file>
+    <file>icon2.png</file>
+    <file>search_icon.svg</file>
+  </qresource>
+</RCC>

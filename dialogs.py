@@ -5,12 +5,12 @@ import sqlite3
 
 
 class AddPassword(QDialog, Ui_Add_password):
-    def __init__(self, mainWindow):
+    def __init__(self, main_window):
         QDialog.__init__(self)
         self.setupUi(self)
         # Подгружаем базу данных и списоки категорий и приложений
         self.con = sqlite3.connect("res/passwords.sqlite")
-        self.loadAppsAndTypes(mainWindow)
+        self.loadAppsAndTypes(main_window)
         # Подключения кнопок
         self.buttonBox.accepted.connect(self.save)
         self.buttonBox.rejected.connect(self.reject)
@@ -57,7 +57,7 @@ class AddPassword(QDialog, Ui_Add_password):
 
 
 class AboutProgram(QDialog, Ui_AboutApp):
-    def __init__(self, mainWindow):
+    def __init__(self, main_window):
         QDialog.__init__(self)
         self.setupUi(self)
         self.buttonBox.rejected.connect(self.reject)
