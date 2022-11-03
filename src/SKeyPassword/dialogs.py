@@ -15,7 +15,7 @@ class AddPassword(QDialog, Ui_Add_password):
         self.buttonBox.accepted.connect(self.save)
         self.buttonBox.rejected.connect(self.reject)
 
-    def AddTypeIf(self):
+    def add_type_if(self):
         """Проверяет есть ли категория в базе данных
                         и если нет, добавляет её туда"""
         cur = self.con.cursor()
@@ -30,9 +30,9 @@ class AddPassword(QDialog, Ui_Add_password):
                         ''', (self.type.currentText(), ))
             self.con.commit()
 
-    def addTobd(self):
+    def add_to_db(self):
         """Добавляет полученные данные в базу данных"""
-        self.AddTypeIf()  # Отдельно проверим наличие категории
+        self.add_type_if()  # Отдельно проверим наличие категории
         cur = self.con.cursor()
         cur.execute("""
                     INSERT INTO Passwords(app_name, login, password, app_type)
@@ -48,7 +48,7 @@ class AddPassword(QDialog, Ui_Add_password):
 
     def save(self) -> None:
         """Кнопка 'сохранить' """
-        self.addTobd()
+        self.add_to_db()
         return super().accept()
 
     def reject(self) -> None:

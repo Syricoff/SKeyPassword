@@ -22,7 +22,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Подключения кнопок
         self.add_password.clicked.connect(self.addPassword)
         self.about_program.triggered.connect(self.aboutProgram)
-        self.pushButton.clicked.connect(self.run)
         self.filter.currentTextChanged.connect(self.loadFilterList)
         self.types_or_apps_list.itemClicked.connect(self.showLoginAndPasswords)
 
@@ -30,10 +29,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """Выводит список категорий"""
         self.scrollArea.setWidget(QWidget())  # Очищение scrollArea
         self.types_or_apps_list.clear()
-        if self.filter.currentText() == "Категории":
-            self.types_or_apps_list.addItems(self.loadTypes())
-        elif self.filter.currentText() == "Приложения":
-            self.types_or_apps_list.addItems(self.loadApps())
+        match self.filter.currentText():
+            case "Категории":
+                self.types_or_apps_list.addItems(self.loadTypes())
+            case "Приложения":
+                self.types_or_apps_list.addItems(self.loadApps())
 
     def addPassword(self):
         """Вызывает диалог добавления пароля"""
@@ -63,26 +63,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     (SELECT app_type FROM Passwords)
                     ''').fetchall()))
 
-    def loadLoginPassword(self, condition) -> list[tuple[str, str]]:
+    def loadLoginPassword(self, condition: str) -> list[tuple[str, str]]:
         """Загружает и возвращает список кортежей из логина и пароля"""
         cur = self.con.cursor()
-        return cur.execute('''
-                    SELECT login, password FROM Passwords
-                    ''').fetchall()
+        match self.filter.currentText():
+            case "Категории":
+                return cur.execute('''
+                           SELECT login, password
+                           FROM Passwords
+                           WHERE app_type =
+                           (SELECT id FROM Types
+                           WHERE type_name = ?)
+                           ''', (condition, )).fetchall()
+            case "Приложения":
+                return cur.execute('''
+                           SELECT login, password
+                           FROM Passwords
+                           WHERE app_name = ?
+                           ''', (condition, )).fetchall()
 
     def showLoginAndPasswords(self, item):
         """Выводит список паролей в виде объектов класса PasswordView"""
         self.widget = QWidget()
         self.vbox = QVBoxLayout()
         self.widget.setLayout(self.vbox)
-        for login, password in self.loadLoginPassword(item):
+        for login, password in self.loadLoginPassword(item.text()):
             self.vbox.addWidget(PasswordView(login, password))
         self.scrollArea.setWidget(self.widget)
-
-    def run(self):
-        cur = self.con.cursor()
-        print(cur.execute("""
-                    SELECT * From Passwords""").fetchall())
 
 
 class PasswordView(QGroupBox):
