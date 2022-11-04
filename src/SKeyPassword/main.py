@@ -5,7 +5,7 @@ import sqlite3
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtWidgets import (QVBoxLayout, QGroupBox, QLineEdit, QLabel, QHBoxLayout,
-                             QGridLayout, QPushButton, QListWidgetItem)
+                             QGridLayout, QPushButton, QSizePolicy)
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5 import QtCore
 from dialogs import AddPassword, AboutProgram
@@ -44,14 +44,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def addPassword(self):
         """Вызывает диалог добавления пароля"""
         addPasswordDialog = AddPassword(self)
-        addPasswordDialog.exec()
+        addPasswordDialog.exec_()
         # Обновляем фильтр на случай, если добавляли категории или приложения
         self.loadFilterList()
-
+        self.showLoginAndPasswords(every=True)
+        
     def aboutProgram(self):
         """Вызывет диалог 'О программе' """
         aboutProgram = AboutProgram(self)
-        aboutProgram.exec()
+        aboutProgram.exec_()
 
     def loadApps(self) -> list[str]:
         """Загружает и возвращает список приложений"""
@@ -126,7 +127,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 class PasswordViewBox(QGroupBox):
     def __init__(self, login, password):
         super().__init__()
-        self.setTitle(login)
         # Подгружаю иконки
         eye_icon = QIcon()
         eye_icon.addPixmap(QPixmap("./res/icons/eye-outline.svg"),
@@ -136,18 +136,21 @@ class PasswordViewBox(QGroupBox):
         copy_icon = QIcon()
         copy_icon.addPixmap(QPixmap("./res/icons/content-copy.svg"),
                             QIcon.Normal, QIcon.Off)
-        
-        self.hLayout = QHBoxLayout()
-        self.label_5 = QLabel("qw")
-        self.label_6 = QLabel("wdsfgsfgde")
-        # self.label_6.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.hLayout.addWidget(self.label_5)
-        self.hLayout.addWidget(self.label_6)
-
+         
+        self.setTitle(login)
+        self.setSizePolicy(QSizePolicy.Preferred,
+                           QSizePolicy.Fixed)
+        # Создание label для названия приложения и категории
+        self.app = QLabel("qw")
+        self.category = QLabel("wdsfgsfgde")
+        self.category.setAlignment(
+                                QtCore.Qt.AlignRight |
+                                QtCore.Qt.AlignTrailing |
+                                QtCore.Qt.AlignVCenter)
         # Создаю lineEdit для пароля
-        self.lineEdit = QLineEdit(password)
-        self.lineEdit.setEchoMode(QLineEdit.Password)
-        self.lineEdit.setReadOnly(True)
+        self.password = QLineEdit(password)
+        self.password.setEchoMode(QLineEdit.Password)
+        self.password.setReadOnly(True)
         # Создаю кнопку для переключения видимости пароля
         self.eye = QPushButton()
         self.eye.setCheckable(True)
@@ -156,28 +159,29 @@ class PasswordViewBox(QGroupBox):
         self.copy = QPushButton()
         self.copy.setIcon(copy_icon)
         # Создание layout и добавление в него элементов
+        self.hLayout = QHBoxLayout()
+        self.hLayout.addWidget(self.app)
+        self.hLayout.addWidget(self.category)
         self.gridLayout = QGridLayout(self)
-        self.gridLayout.addWidget(self.lineEdit, 1, 0, 1, 1)
+        self.gridLayout.addLayout(self.hLayout, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.password, 1, 0, 1, 1)
         self.gridLayout.addWidget(self.eye, 1, 1, 1, 1)
         self.gridLayout.addWidget(self.copy, 1, 2, 1, 1)
-        
-        self.gridLayout.addLayout(self.hLayout, 0, 0, 1, 1)
-
         # Подключения кнопок
         self.eye.toggled.connect(self.show_password)
         self.copy.clicked.connect(self.copy_password)
 
     def show_password(self, flag):
-        """Если кнопка нажата то переводит lineEdit
+        """Если кнопка нажата то переводит password
                 в обычный режим, иначе в режим пароля"""
         if flag:
-            self.lineEdit.setEchoMode(QLineEdit.Normal)
+            self.password.setEchoMode(QLineEdit.Normal)
         else:
-            self.lineEdit.setEchoMode(QLineEdit.Password)
+            self.password.setEchoMode(QLineEdit.Password)
 
     def copy_password(self):
         """Добавляет пароль в буфер обмена"""
-        QApplication.clipboard().setText(self.lineEdit.text())
+        QApplication.clipboard().setText(self.password.text())
         
     def edit_password(self):
         pass
