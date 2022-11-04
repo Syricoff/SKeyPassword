@@ -28,7 +28,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>../res/icons/search_icon.svg</pixmap>
+           <pixmap>../../../res/icons/search_icon.svg</pixmap>
           </property>
           <property name="scaledContents">
            <bool>false</bool>
@@ -40,8 +40,14 @@
         </item>
         <item>
          <widget class="QLineEdit" name="search">
+          <property name="dragEnabled">
+           <bool>false</bool>
+          </property>
           <property name="placeholderText">
            <string>Поиск</string>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -89,7 +95,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>../res/icons/filter.svg</pixmap>
+           <pixmap>../../../res/icons/filter.svg</pixmap>
           </property>
          </widget>
         </item>
@@ -170,8 +176,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="../../../res/icons/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
