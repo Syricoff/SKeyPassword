@@ -4,10 +4,10 @@ import sqlite3
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow, QWidget
-from PyQt5.QtWidgets import (QVBoxLayout, QGroupBox, QLineEdit,
-                             QGridLayout, QPushButton)
+from PyQt5.QtWidgets import (QVBoxLayout, QGroupBox, QLineEdit, QLabel, QHBoxLayout,
+                             QGridLayout, QPushButton, QListWidgetItem)
 from PyQt5.QtGui import QPixmap, QIcon
-
+from PyQt5 import QtCore
 from dialogs import AddPassword, AboutProgram
 from ui.ui_MainWindow import Ui_MainWindow
 
@@ -16,19 +16,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        # Подгружаем базу данных и список категорий
+        self.password_boxes: list[PasswordViewBox] = []
+        # Подгружаем базу данных, список категорий и паролей
         self.con = sqlite3.connect("res/passwords.sqlite")
         self.loadFilterList()
+        self.showLoginAndPasswords(every=True)
         # Подключения кнопок
         self.add_password.clicked.connect(self.addPassword)
         self.about_program.triggered.connect(self.aboutProgram)
         self.filter.currentTextChanged.connect(self.loadFilterList)
-        self.types_or_apps_list.itemClicked.connect(self.showLoginAndPasswords)
+        self.types_or_apps_list.itemClicked.connect(
+                                    lambda value:
+                                    self.showLoginAndPasswords(value.text())
+                                                    )
+        self.search.textEdited.connect(self.searching)
 
     def loadFilterList(self):
         """Выводит список категорий"""
-        self.scrollArea.setWidget(QWidget())  # Очищение scrollArea
         self.types_or_apps_list.clear()
+        # Pattern matching из Python 3.10
         match self.filter.currentText():
             case "Категории":
                 self.types_or_apps_list.addItems(self.loadTypes())
@@ -39,6 +45,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """Вызывает диалог добавления пароля"""
         addPasswordDialog = AddPassword(self)
         addPasswordDialog.exec()
+        # Обновляем фильтр на случай, если добавляли категории или приложения
         self.loadFilterList()
 
     def aboutProgram(self):
@@ -63,36 +70,60 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     (SELECT app_type FROM Passwords)
                     ''').fetchall()))
 
-    def loadLoginPassword(self, condition: str) -> list[tuple[str, str]]:
+    def loadLoginPassword(self, condition: str, every: bool) -> list[tuple[str, str]]:
         """Загружает и возвращает список кортежей из логина и пароля"""
+        text = self.filter.currentText()
         cur = self.con.cursor()
-        match self.filter.currentText():
-            case "Категории":
-                return cur.execute('''
-                           SELECT login, password
-                           FROM Passwords
-                           WHERE app_type =
-                           (SELECT id FROM Types
-                           WHERE type_name = ?)
-                           ''', (condition, )).fetchall()
-            case "Приложения":
-                return cur.execute('''
-                           SELECT login, password
-                           FROM Passwords
-                           WHERE app_name = ?
-                           ''', (condition, )).fetchall()
+        if every:
+            return cur.execute('''
+                        SELECT login, password
+                        FROM Passwords
+                        ''').fetchall()
+        elif text == "Категории":
+            return cur.execute('''
+                        SELECT login, password
+                        FROM Passwords
+                        WHERE app_type =
+                        (SELECT id FROM Types
+                        WHERE type_name = ?)
+                        ''', (condition, )).fetchall()
+        elif text == "Приложения":
+            return cur.execute('''
+                        SELECT login, password
+                        FROM Passwords
+                        WHERE app_name = ?
+                        ''', (condition, )).fetchall()
 
-    def showLoginAndPasswords(self, item):
-        """Выводит список паролей в виде объектов класса PasswordView"""
+    def showLoginAndPasswords(self, item='', every=False):
+        """Выводит список паролей в виде объектов класса PasswordViewBox"""
+        # Создаём виджет и layout которые в дальнейшем положим в scrollArea
         self.widget = QWidget()
         self.vbox = QVBoxLayout()
         self.widget.setLayout(self.vbox)
-        for login, password in self.loadLoginPassword(item.text()):
-            self.vbox.addWidget(PasswordView(login, password))
+        # Очищаем список экземпляров PasswordViewBox
+        self.password_boxes.clear()
+        # В цикле заполняем layout и список экземплярами PasswordViewBox
+        for login, password in self.loadLoginPassword(item, every):
+            box = PasswordViewBox(login, password)
+            self.vbox.addWidget(box)
+            self.password_boxes.append(box)
+        # Загружаем виджет в scrollArea
         self.scrollArea.setWidget(self.widget)
 
+    def searching(self, value):
+        """Отвечает за работу виджета поиска"""
+        if value.strip():
+            for box in self.password_boxes:
+                if value.lower() in box.title().lower():
+                    box.show()
+                else:
+                    box.hide()
+        else:
+            self.search.clear()
+            self.showLoginAndPasswords(every=True)
 
-class PasswordView(QGroupBox):
+
+class PasswordViewBox(QGroupBox):
     def __init__(self, login, password):
         super().__init__()
         self.setTitle(login)
@@ -105,6 +136,14 @@ class PasswordView(QGroupBox):
         copy_icon = QIcon()
         copy_icon.addPixmap(QPixmap("./res/icons/content-copy.svg"),
                             QIcon.Normal, QIcon.Off)
+        
+        self.hLayout = QHBoxLayout()
+        self.label_5 = QLabel("qw")
+        self.label_6 = QLabel("wdsfgsfgde")
+        # self.label_6.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.hLayout.addWidget(self.label_5)
+        self.hLayout.addWidget(self.label_6)
+
         # Создаю lineEdit для пароля
         self.lineEdit = QLineEdit(password)
         self.lineEdit.setEchoMode(QLineEdit.Password)
@@ -118,14 +157,17 @@ class PasswordView(QGroupBox):
         self.copy.setIcon(copy_icon)
         # Создание layout и добавление в него элементов
         self.gridLayout = QGridLayout(self)
-        self.gridLayout.addWidget(self.lineEdit, 0, 0, 1, 1)
-        self.gridLayout.addWidget(self.eye, 0, 1, 1, 1)
-        self.gridLayout.addWidget(self.copy, 0, 2, 1, 1)
+        self.gridLayout.addWidget(self.lineEdit, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.eye, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.copy, 1, 2, 1, 1)
+        
+        self.gridLayout.addLayout(self.hLayout, 0, 0, 1, 1)
+
         # Подключения кнопок
-        self.eye.toggled.connect(self.showpassword)
+        self.eye.toggled.connect(self.show_password)
         self.copy.clicked.connect(self.copy_password)
 
-    def showpassword(self, flag):
+    def show_password(self, flag):
         """Если кнопка нажата то переводит lineEdit
                 в обычный режим, иначе в режим пароля"""
         if flag:
@@ -136,6 +178,9 @@ class PasswordView(QGroupBox):
     def copy_password(self):
         """Добавляет пароль в буфер обмена"""
         QApplication.clipboard().setText(self.lineEdit.text())
+        
+    def edit_password(self):
+        pass
 
 
 if __name__ == '__main__':
