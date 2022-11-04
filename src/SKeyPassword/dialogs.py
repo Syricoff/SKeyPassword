@@ -1,6 +1,7 @@
 from ui.ui_Add_password import Ui_Add_password
 from ui.ui_AboutApp import Ui_AboutApp
-from errors import *
+from errors import (PasswordError, LoginError,
+                    AppError, CategoryError)
 
 from PyQt5.QtWidgets import QDialog, QPushButton, QDialogButtonBox
 import sqlite3
@@ -10,7 +11,9 @@ class AddPassword(QDialog, Ui_Add_password):
     def __init__(self, main_window):
         QDialog.__init__(self)
         self.setupUi(self)
+        # Прячем label для вывода ошибок
         self.errors.hide()
+        # Добавляем кнопку сохранить в buttonBox
         self.save_button = QPushButton("Сохранить")
         self.buttonBox.addButton(self.save_button, QDialogButtonBox.ActionRole)
         # Подгружаем базу данных и списоки категорий и приложений
@@ -35,7 +38,7 @@ class AddPassword(QDialog, Ui_Add_password):
                         VALUES(?)
                         ''', (self.category.currentText(), ))
             self.con.commit()
-            
+
     def validator(self):
         category = self.category.currentText()
         app = self.app.currentText()
@@ -49,12 +52,12 @@ class AddPassword(QDialog, Ui_Add_password):
             raise CategoryError("Категория")
         if not password.strip():
             raise PasswordError("Пароль")
-        
+
     def add_to_db(self):
         """Добавляет полученные данные в базу данных"""
         try:
-            self.validator()
-            self.add_category_if()  # Отдельно проверим наличие категории
+            self.validator()  # Проверка на пустые поля
+            self.add_category_if()  # Проверка наличия категории
             cur = self.con.cursor()
             cur.execute("""
                         INSERT INTO
@@ -62,13 +65,14 @@ class AddPassword(QDialog, Ui_Add_password):
                         VALUES(?, ?, ?,
                         (SELECT id FROM Types WHERE type_name = ?))
                         """, (self.app.currentText(), self.login.text(),
-                            self.password.text(), self.category.currentText()))
+                        self.password.text(), self.category.currentText()))
             self.con.commit()
             self.errors.hide()
         except ValueError as e:
             self.errors.show()
             self.errors.setText(f"Поле {e} не может быть пустым")
-            
+            self.save_button.setEnabled(True)
+            self.password.setReadOnly(True)
 
     def loadAppsAndTypes(self, main):
         """Подгружает и выводит списки приложений и категорий"""
@@ -82,8 +86,10 @@ class AddPassword(QDialog, Ui_Add_password):
     def reject(self) -> None:
         """Кнопка 'отмена' """
         return super().reject()
-    
+
     def save(self) -> None:
+        self.save_button.setDisabled(True)
+        self.password.setReadOnly(True)
         self.add_to_db()
 
 
@@ -95,4 +101,3 @@ class AboutProgram(QDialog, Ui_AboutApp):
 
     def reject(self):
         return super().reject()
-
