@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (QVBoxLayout, QGroupBox, QLineEdit,
                              QPushButton, QSizePolicy)
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5 import QtCore
+
 from dialogs import AddPassword, AboutProgram
 from ui.ui_MainWindow import Ui_MainWindow
 
@@ -74,7 +75,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     (SELECT app_type FROM Passwords)
                     ''').fetchall()))
 
-    def loadLoginPassword(self, condition, every) -> list[tuple[str, str]]:
+    def loadLoginPassword(self, condition, every) -> list[int]:
         """Загружает и возвращает список id записей"""
         text = self.filter.currentText()
         cur = self.con.cursor()
@@ -124,7 +125,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if value := value.strip().lower():
             #  Поиск по всем элементам(логин, название приложения, категория)
             for box in self.password_boxes:
-                if any(map(lambda x: value in x.lower(), box.getItems())):
+                if any(map(lambda x: x.startswith(value), box.getItems())):
                     box.show()
                 else:
                     box.hide()
@@ -196,9 +197,10 @@ class PasswordViewBox(QGroupBox):
         self.copy.clicked.connect(self.copy_password)
 
     def getItems(self) -> tuple[str, str, str]:
-        return (self.login.text(),
-                self.title(),
-                self.category.text())
+        return tuple(map(str.lower,
+                         (self.login.text(),
+                          self.title(),
+                          self.category.text())))
 
     def show_password(self, flag):
         """Если кнопка нажата то переводит password

@@ -12,3 +12,7 @@ class LoginError(ValueError):
 
 class PasswordError(ValueError):
     pass
+
+
+class DataExistError(ValueError):
+    pass
