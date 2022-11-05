@@ -83,7 +83,7 @@ class AddPassword(QDialog, Ui_Add_password):
             cur = self.con.cursor()
             cur.execute("""
                         INSERT INTO
-                        Passwords(app_name, login, password, app_type)
+                        Passwords(app_type, app_name, login, password)
                         VALUES((SELECT id FROM Types WHERE
                         type_name = ?),
                         ?, ?, ?)
