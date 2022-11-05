@@ -166,7 +166,7 @@ class PasswordViewBox(QGroupBox):
                            QSizePolicy.Fixed)
         # Создание label для названия приложения и категории
         self.login = QLabel(login)
-        self.login.setTextInteractionFlags(QtCore.Qt.TextSelectableByKeyboard)
+        self.login.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
         self.category = QLabel(category)
         self.category.setAlignment(
                                 QtCore.Qt.AlignRight |

@@ -71,6 +71,9 @@ class Ui_Add_password(object):
         self.retranslateUi(Add_password)
         self.buttonBox.accepted.connect(Add_password.accept) # type: ignore
         self.buttonBox.rejected.connect(Add_password.reject) # type: ignore
+        self.category.currentTextChanged['QString'].connect(self.errors.hide) # type: ignore
+        self.app.currentTextChanged['QString'].connect(self.errors.hide) # type: ignore
+        self.login.textChanged['QString'].connect(self.errors.hide) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Add_password)
 
     def retranslateUi(self, Add_password):
