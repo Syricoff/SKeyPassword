@@ -15,9 +15,21 @@ class Ui_Add_password(object):
     def setupUi(self, Add_password):
         Add_password.setObjectName("Add_password")
         Add_password.setWindowModality(QtCore.Qt.ApplicationModal)
-        Add_password.resize(353, 240)
+        Add_password.resize(351, 240)
         self.gridLayout = QtWidgets.QGridLayout(Add_password)
         self.gridLayout.setObjectName("gridLayout")
+        self.buttonBox = QtWidgets.QDialogButtonBox(Add_password)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Close)
+        self.buttonBox.setCenterButtons(True)
+        self.buttonBox.setObjectName("buttonBox")
+        self.gridLayout.addWidget(self.buttonBox, 2, 0, 1, 1)
+        self.errors = QtWidgets.QLabel(Add_password)
+        self.errors.setStyleSheet("color: rgb(255, 0, 0)")
+        self.errors.setText("")
+        self.errors.setAlignment(QtCore.Qt.AlignCenter)
+        self.errors.setObjectName("errors")
+        self.gridLayout.addWidget(self.errors, 1, 0, 1, 1)
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.label_application = QtWidgets.QLabel(Add_password)
@@ -55,25 +67,14 @@ class Ui_Add_password(object):
         self.label_password.setObjectName("label_password")
         self.gridLayout_2.addWidget(self.label_password, 3, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_2, 0, 0, 1, 1)
-        self.buttonBox = QtWidgets.QDialogButtonBox(Add_password)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Close)
-        self.buttonBox.setCenterButtons(True)
-        self.buttonBox.setObjectName("buttonBox")
-        self.gridLayout.addWidget(self.buttonBox, 2, 0, 1, 1)
-        self.errors = QtWidgets.QLabel(Add_password)
-        self.errors.setStyleSheet("color: rgb(255, 0, 0)")
-        self.errors.setText("")
-        self.errors.setAlignment(QtCore.Qt.AlignCenter)
-        self.errors.setObjectName("errors")
-        self.gridLayout.addWidget(self.errors, 1, 0, 1, 1)
 
         self.retranslateUi(Add_password)
         self.buttonBox.accepted.connect(Add_password.accept) # type: ignore
         self.buttonBox.rejected.connect(Add_password.reject) # type: ignore
-        self.category.currentTextChanged['QString'].connect(self.errors.hide) # type: ignore
         self.app.currentTextChanged['QString'].connect(self.errors.hide) # type: ignore
+        self.category.currentTextChanged['QString'].connect(self.errors.hide) # type: ignore
         self.login.textChanged['QString'].connect(self.errors.hide) # type: ignore
+        self.password.textChanged['QString'].connect(self.errors.hide) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Add_password)
 
     def retranslateUi(self, Add_password):
