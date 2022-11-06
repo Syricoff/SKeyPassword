@@ -32,10 +32,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def loadFilterList(self):
         """Выводит список категорий"""
-        # Очистка списка категорий / приложений
-        self.types_or_apps_list.clear()
         # Вывод списка всех паролей
         self.showLoginAndPasswords()
+        # Очистка списка категорий / приложений
+        self.types_or_apps_list.clear()
         # Pattern matching из Python 3.10
         match self.filter.currentText():
             case "Категории":
@@ -92,10 +92,10 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
         QGroupBox.__init__(self)
         self.setupUi(self)
         self.id = id
+        self.main = main
         # Подключаем базу данных
         self.db = DataBase()
         self.loadData()
-        self.loadAppsAndTypes()
         # Прячем не нужные виджеты
         self.save.setVisible(False)
         self.label_category.setVisible(False)
@@ -114,6 +114,8 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
 
     def loadAppsAndTypes(self):
         """Подгружает и выводит списки приложений и категорий"""
+        self.app_edit.clear()
+        self.category_edit.clear()
         self.app_edit.addItems(self.db.getApps())
         self.category_edit.addItems(self.db.getCategories())
 
@@ -125,6 +127,7 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
         self.category.setText(category)
         self.login.setText(login)
         self.password.setText(password)
+        self.loadAppsAndTypes()
         # В неактивные тоже
         self.login_edit.setText(login)
         self.app_edit.setCurrentIndex(
@@ -172,7 +175,7 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
             self.deleteLater()
 
     def saveChanges(self):
-        if len(self.db.loadId(condition="id", args=self.getItems())) <= 1:
+        if len(self.db.loadId(filter="id", args=self.getItems())) <= 1:
             self.db.overwrite(self.id, self.getItems())
         else:
             print('ps')

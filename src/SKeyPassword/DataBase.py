@@ -58,7 +58,7 @@ class DataBase:
                          FROM Passwords
                          WHERE app_name = ?
                          ''', self.validator((condition,))).fetchall()))
-        elif condition == "id":
+        elif filter == "id" and args:
             return cur.execute("""
                             SELECT id
                             FROM Passwords
