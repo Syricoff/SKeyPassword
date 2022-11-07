@@ -140,7 +140,7 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
                          (self.category_edit.currentText(),
                           self.app_edit.currentText(),
                           self.login_edit.text(),
-                          self.password.text())))
+                          ))) + (self.password.text(), )
 
     def showPassword(self, flag):
         """Если кнопка нажата то переводит password
@@ -153,6 +153,11 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
     def copyPassword(self):
         """Добавляет пароль в буфер обмена"""
         QApplication.clipboard().setText(self.password.text())
+
+    def CleanUnusedCategories(self, category):
+        if not self.db.isCategory(category):
+            self.db.delCategory(category)
+        self.main.loadFilterList()
 
     def editPassword(self, flag):
         self.loadData()
@@ -172,13 +177,24 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
                                     QMessageBox.Yes, QMessageBox.No)
         if answ == QMessageBox.Yes:
             self.db.delete(self.id)
-            self.deleteLater()
+            # self.deleteLater()
+            self.CleanUnusedCategories(self.category.text())
 
     def saveChanges(self):
-        if len(self.db.loadId(filter="id", args=self.getItems())) <= 1:
+        if ((self.db.getId(self.getItems()) is None) or
+                (self.db.getId(self.getItems()) == (self.id, ))):
             self.db.overwrite(self.id, self.getItems())
+            self.CleanUnusedCategories(self.category.text())
         else:
-            print('ps')
+            answ = QMessageBox.question(self,
+                                        'Подтвердждение действия',
+                                        "Запись с такими данными уже существует!\n\n \
+                                        \tЖелаете перезаписать?",
+                                        QMessageBox.Yes, QMessageBox.No)
+            if answ == QMessageBox.Yes:
+                self.db.delete(self.db.getId(self.getItems()))
+                self.db.overwrite(self.id, self.getItems())
+                self.CleanUnusedCategories(self.category.text())
 
 
 if __name__ == '__main__':

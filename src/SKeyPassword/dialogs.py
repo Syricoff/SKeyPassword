@@ -59,8 +59,6 @@ class AddPassword(QDialog, Ui_Add_password):
         """Добавляет полученные данные в базу данных"""
         try:
             self.validator()  # Проверка на пустые поля
-            # Проверка наличия категории
-            self.db.addCategoryIf(self.getItems())
             if self.db.getId(self.getItems()) is not None:
                 raise DataExistError("Запись уже существует")
             self.db.add(self.getItems())
@@ -87,7 +85,7 @@ class AddPassword(QDialog, Ui_Add_password):
         self.errors.setText(text)
 
     def overwrite(self):
-        self.db.overwrite(self.db.getId(self.getItems()),
+        self.db.overwrite(self.db.getId(self.getItems())[0],
                           self.getItems())
         self.overwrite_button.hide()
         self.success('Успешно перезаписано')
