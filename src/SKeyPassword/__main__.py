@@ -1,9 +1,11 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMainWindow, QWidget, QMessageBox
-from PyQt5.QtWidgets import QVBoxLayout, QGroupBox, QLineEdit
-from PyQt5.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QMainWindow, QWidget, QMessageBox
+from PyQt6.QtWidgets import QVBoxLayout, QGroupBox, QLineEdit
+from PyQt6.QtGui import QIcon
+
+from qt_material import apply_stylesheet
 
 from DataBase import DataBase
 from dialogs import AddPassword, AboutProgram
@@ -146,9 +148,9 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
         """Если кнопка нажата то переводит password
                 в обычный режим, иначе в режим пароля"""
         if flag:
-            self.password.setEchoMode(QLineEdit.Normal)
+            self.password.setEchoMode(QLineEdit.EchoMode.Normal)
         else:
-            self.password.setEchoMode(QLineEdit.Password)
+            self.password.setEchoMode(QLineEdit.EchoMode.Password)
 
     def copyPassword(self):
         """Добавляет пароль в буфер обмена"""
@@ -201,5 +203,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("res/icons/icon2"))  # Иконка приложения
     ex = MainWindow()
+    apply_stylesheet(app, theme='light_teal.xml')
     ex.show()
     sys.exit(app.exec())

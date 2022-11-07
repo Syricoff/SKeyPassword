@@ -1,11 +1,13 @@
+from ui.ui_Add_password import Ui_Add_password
+from ui.ui_AboutApp import Ui_AboutApp
+
 from PyQt5.QtWidgets import QDialog, QPushButton, QDialogButtonBox
 
 from DataBase import DataBase
 from errors import (PasswordError, LoginError, AppError,
                     CategoryError, DataExistError)
 
-from ui.ui_Add_password import Ui_Add_password
-from ui.ui_AboutApp import Ui_AboutApp
+
 
 
 class AddPassword(QDialog, Ui_Add_password):
