@@ -4,8 +4,8 @@ from DataBase import DataBase
 from errors import (PasswordError, LoginError, AppError,
                     CategoryError, DataExistError)
 
-from ui.ui_Add_password import Ui_Add_password
-from ui.ui_AboutApp import Ui_AboutApp
+from src.res.ui.ui_Add_password import Ui_Add_password
+from src.res.ui.ui_AboutApp import Ui_AboutApp
 
 
 class AddPassword(QDialog, Ui_Add_password):
@@ -24,7 +24,7 @@ class AddPassword(QDialog, Ui_Add_password):
         self.overwrite_button.hide()
         # Подгружаем базу данных и списоки категорий и приложений
         self.db = DataBase()
-        self.loadAppsAndCategories()
+        self.load_apps_and_categories()
         # Подключения кнопок
         self.save_button.clicked.connect(self.save)
         self.overwrite_button.clicked.connect(self.overwrite)
@@ -32,20 +32,20 @@ class AddPassword(QDialog, Ui_Add_password):
         self.app.currentTextChanged.connect(self.overwrite_button.hide)
         self.login.textChanged.connect(self.overwrite_button.hide)
 
-    def getItems(self) -> tuple[str, str, str, str]:
+    def get_items(self) -> tuple:
         return tuple(map(lambda x: x.strip(),
                          (self.category.currentText(),
                           self.app.currentText(),
                           self.login.text(),
                           self.password.text())))
 
-    def loadAppsAndCategories(self):
+    def load_apps_and_categories(self):
         """Подгружает и выводит списки приложений и категорий"""
-        self.app.addItems(self.db.getApps())
-        self.category.addItems(self.db.getCategories())
+        self.app.addItems(self.db.get_apps())
+        self.category.addItems(self.db.get_categories())
 
     def validator(self):
-        category, app, login, password = self.getItems()
+        category, app, login, password = self.get_items()
         if not app:
             raise AppError("Поле Приложение не может быть пустым")
         if not login:
@@ -55,15 +55,13 @@ class AddPassword(QDialog, Ui_Add_password):
         if not password:
             raise PasswordError("Поле Пароль не может быть пустым")
 
-    def addEntry(self) -> bool | None:
+    def add_entry(self) -> bool | None:
         """Добавляет полученные данные в базу данных"""
         try:
             self.validator()  # Проверка на пустые поля
-            # Проверка наличия категории
-            self.db.addCategoryIf(self.getItems())
-            if self.db.getId(self.getItems()) is not None:
+            if self.db.get_id(self.get_items()) is not None:
                 raise DataExistError("Запись уже существует")
-            self.db.add(self.getItems())
+            self.db.add(self.get_items())
             self.success("Успешно сохранено")
             return True
         except DataExistError as e:
@@ -73,7 +71,7 @@ class AddPassword(QDialog, Ui_Add_password):
             self.error(e)
 
     def save(self) -> None:
-        if self.addEntry():
+        if self.add_entry():
             return self.accept()
 
     def error(self, error):
@@ -87,8 +85,8 @@ class AddPassword(QDialog, Ui_Add_password):
         self.errors.setText(text)
 
     def overwrite(self):
-        self.db.overwrite(self.db.getId(self.getItems()),
-                          self.getItems())
+        self.db.overwrite(self.db.get_id(self.get_items())[0],
+                          self.get_items())
         self.overwrite_button.hide()
         self.success('Успешно перезаписано')
 

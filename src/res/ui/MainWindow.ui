@@ -28,7 +28,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>../../../res/icons/search_icon.svg</pixmap>
+           <pixmap>../icons/search_icon.svg</pixmap>
           </property>
           <property name="scaledContents">
            <bool>false</bool>
@@ -64,7 +64,7 @@
            <x>0</x>
            <y>0</y>
            <width>414</width>
-           <height>291</height>
+           <height>333</height>
           </rect>
          </property>
         </widget>
@@ -72,30 +72,17 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="add_password">
-      <property name="acceptDrops">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Добавить пароль</string>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="1" colspan="2">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="icon_filter">
           <property name="text">
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>../../../res/icons/filter.svg</pixmap>
+           <pixmap>../icons/filter.svg</pixmap>
           </property>
          </widget>
         </item>
@@ -133,6 +120,19 @@
       <item>
        <widget class="QListWidget" name="types_or_apps_list"/>
       </item>
+      <item>
+       <widget class="QPushButton" name="add_password_button">
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Добавить пароль</string>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -146,18 +146,20 @@
      <height>29</height>
     </rect>
    </property>
-   <widget class="QMenu" name="Menu">
+   <widget class="QMenu" name="menu">
     <property name="title">
      <string>Меню</string>
     </property>
+    <addaction name="change_db_button"/>
+    <addaction name="add_password_from_menu"/>
    </widget>
    <widget class="QMenu" name="help">
     <property name="title">
      <string>Справка</string>
     </property>
-    <addaction name="about_program"/>
+    <addaction name="about_program_button"/>
    </widget>
-   <addaction name="Menu"/>
+   <addaction name="menu"/>
    <addaction name="help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -165,7 +167,7 @@
     <string notr="true">font color: red</string>
    </property>
   </widget>
-  <action name="about_program">
+  <action name="about_program_button">
    <property name="text">
     <string>О приложении</string>
    </property>
@@ -175,7 +177,34 @@
     <string>dsdsv</string>
    </property>
   </action>
+  <action name="change_db_button">
+   <property name="text">
+    <string>Загрузить базу данных</string>
+   </property>
+  </action>
+  <action name="add_password_from_menu">
+   <property name="text">
+    <string>Добавить пароль</string>
+   </property>
+  </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>add_password_from_menu</sender>
+   <signal>triggered()</signal>
+   <receiver>add_password_button</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
