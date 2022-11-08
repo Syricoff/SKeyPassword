@@ -1,4 +1,6 @@
 __pycache__/
-src/SKeyPassword/ui/test.ui
-src/SKeyPassword/ui/ui_test.py
+src/res/ui/test.ui
+src/res/ui/ui_test.py
 .vscode
+.idea
+venv/

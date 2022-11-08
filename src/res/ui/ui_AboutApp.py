@@ -23,7 +23,7 @@ class Ui_AboutApp(object):
         self.gridLayout.addItem(spacerItem1, 2, 1, 1, 1)
         self.label = QtWidgets.QLabel(AboutApp)
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("./res/icons/icon2.png"))
+        self.label.setPixmap(QtGui.QPixmap("../res/icons/icon2.png"))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 1, 0, 3, 1)
