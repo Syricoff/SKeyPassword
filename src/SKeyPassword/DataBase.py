@@ -50,7 +50,7 @@ class DataBase:
         cur = self.con.cursor()
         return list(map(lambda x: x[0],
                         cur.execute('''
-                                    SELECT DISTINCT app_name 
+                                    SELECT DISTINCT app_name
                                     FROM Passwords
                                     ''').fetchall()))
 
@@ -59,7 +59,7 @@ class DataBase:
         cur = self.con.cursor()
         return list(map(lambda x: x[0],
                         cur.execute('''
-                                    SELECT type_name 
+                                    SELECT type_name
                                     FROM Types
                                     ''').fetchall()))
 
@@ -90,10 +90,11 @@ class DataBase:
         elif filter == "Приложения" and condition:
             return tuple(map(lambda x: int(x[0]),
                              cur.execute('''
-                         SELECT id
-                         FROM Passwords
-                         WHERE app_name = ?
-                         ''', validator(condition)).fetchall()))
+                                         SELECT id
+                                         FROM Passwords
+                                         WHERE app_name = ?
+                                         ''',
+                                         validator(condition)).fetchall()))
         return tuple(map(lambda x: int(x[0]),
                          cur.execute('''
                                      SELECT id
@@ -142,14 +143,14 @@ class DataBase:
     def get_id(self, args):
         cur = self.con.cursor()
         return cur.execute("""
-                            SELECT id
-                            FROM Passwords
-                            WHERE  app_type =
-                            (SELECT id FROM Types
-                            WHERE type_name = ?)
-                            AND app_name = ?
-                            AND login = ?
-                            """, validator(args[:3])).fetchone()
+                           SELECT id
+                           FROM Passwords
+                           WHERE  app_type =
+                           (SELECT id FROM Types
+                           WHERE type_name = ?)
+                           AND app_name = ?
+                           AND login = ?
+                           """, validator(args[:3])).fetchone()
 
     def delete(self, id):
         cur = self.con.cursor()
