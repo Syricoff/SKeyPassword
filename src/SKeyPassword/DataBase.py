@@ -48,27 +48,31 @@ class DataBase:
     def get_apps(self) -> list[str]:
         """Загружает и возвращает список приложений"""
         cur = self.con.cursor()
-        return list(map(lambda x: x[0], cur.execute('''
-                    SELECT DISTINCT app_name FROM Passwords
-                    ''').fetchall()))
+        return list(map(lambda x: x[0],
+                        cur.execute('''
+                                    SELECT DISTINCT app_name 
+                                    FROM Passwords
+                                    ''').fetchall()))
 
     def get_categories(self) -> list[str]:
         """Загружает и возвращает список категорий"""
         cur = self.con.cursor()
-        return list(map(lambda x: x[0], cur.execute('''
-                    SELECT type_name FROM Types
-                    ''').fetchall()))
+        return list(map(lambda x: x[0],
+                        cur.execute('''
+                                    SELECT type_name 
+                                    FROM Types
+                                    ''').fetchall()))
 
     def get_category(self, id):
         cur = self.con.cursor()
         return cur.execute('''
-                            SELECT type_name
-                            FROM Types
-                            WHERE id =
-                            (SELECT app_type
-                            FROM Passwords
-                            WHERE id = ?)
-                            ''', validator(id)).fetchone()
+                           SELECT type_name
+                           FROM Types
+                           WHERE id =
+                           (SELECT app_type
+                           FROM Passwords
+                           WHERE id = ?)
+                           ''', validator(id)).fetchone()
 
     def load_id(self, filter='', condition='') -> tuple[int]:
         """Загружает и возвращает список id записей"""
@@ -92,9 +96,9 @@ class DataBase:
                          ''', validator(condition)).fetchall()))
         return tuple(map(lambda x: int(x[0]),
                          cur.execute('''
-                         SELECT id
-                         FROM Passwords
-                         ''').fetchall()))
+                                     SELECT id
+                                     FROM Passwords
+                                     ''').fetchall()))
 
     def add(self, args):
         cur = self.con.cursor()
