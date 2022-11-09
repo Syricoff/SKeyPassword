@@ -7,23 +7,23 @@ from PyQt5.QtWidgets import QVBoxLayout, QGroupBox, QLineEdit
 
 from DataBase import DataBase
 from dialogs import AddPassword, AboutProgram
-from src.res.ui.ui_MainWindow import Ui_MainWindow
-from src.res.ui.ui_PasswordView import Ui_PasswordView
+from res.ui.ui_MainWindow import Ui_MainWindow
+from res.ui.ui_PasswordView import Ui_PasswordView
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
+        # Список, в котором будут храниться пароли
         self.password_boxes: list[PasswordViewBox] = []
-        # Подгружаем базу данных, список категорий и паролей
-        self.db = DataBase()
-        self.load_filter_list()
+        # Подгружаем список приложений
+        self.load_data()
         # Подключения кнопок
         self.add_password_button.clicked.connect(self.add_password)
         self.about_program_button.triggered.connect(self.about_program)
-        self.filter.currentTextChanged.connect(self.load_filter_list)
-        self.types_or_apps_list.itemClicked.connect(
+        self.category.activated.connect(self.load_data)
+        self.apps_list.itemClicked.connect(
             lambda value:
             self.show_passwords(value.text())
         )
@@ -31,38 +31,46 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.search.textEdited.connect(self.searching)
 
     def change_db(self):
-        self.db.change_db(QFileDialog.getOpenFileName(
+        """File dialog для выбора файла базы данных"""
+        db.change_db(QFileDialog.getOpenFileName(
             self, 'Выбрать базу данных', '',
             'База данных (*db), (*sqlite);;Все файлы (*)')[0]
                           )
-        self.load_filter_list()
+        self.load_data()
 
-    def load_filter_list(self):
-        """Выводит список категорий"""
+    def load_catigories(self):
+        if len(self.category) - 1 != len(db.get_categories()):
+            self.category.clear()
+            self.category.addItem("Все приложения")
+            self.category.addItems(db.get_categories())
+
+    def load_data(self):
+        """Выводит все данные из базы данных в нужные виджеты"""
+        # Загрузка списка категорий
+        self.load_catigories()
         # Вывод списка всех паролей
         self.show_passwords()
-        # Очистка списка категорий / приложений
-        self.types_or_apps_list.clear()
-        # В зависимости от выбранного фильтра
-        # выводится список приложений или список категорий
-        if self.filter.currentText() == "Категории":
-            self.types_or_apps_list.addItems(self.db.get_categories())
-        elif self.filter.currentText() == "Приложения":
-            self.types_or_apps_list.addItems(self.db.get_apps())
+        # Очистка списка приложений
+        self.apps_list.clear()
+        # Вывод списка приложений
+        if (category := self.category.currentText()) == "Все приложения":
+            self.apps_list.addItems(db.get_apps())
+        else:
+            self.apps_list.addItems(db.get_apps(category))
 
     def add_password(self):
         """Вызывает диалог добавления пароля"""
         add_password_dialog = AddPassword(self)
         add_password_dialog.exec_()
-        # Обновляем фильтр на случай, если добавляли категории или приложения
-        self.load_filter_list()
+        # Обновляем данные
+        self.load_data()
 
     def about_program(self):
         """Вызывет диалог 'О программе' """
         about_program_dialog = AboutProgram(self)
         about_program_dialog.exec_()
 
-    def show_passwords(self, item=''):
+    def show_passwords(self, item=None, category=None):
         """Выводит список паролей в виде объектов класса PasswordViewBox"""
         # Создаём виджет и layout которые в дальнейшем положим в scrollArea
         widget = QWidget()
@@ -71,7 +79,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Очищаем список экземпляров PasswordViewBox
         self.password_boxes.clear()
         # В цикле заполняем layout и список экземплярами PasswordViewBox
-        for id in self.db.load_id(self.filter.currentText(), item):
+        if self.category.currentText() != "Все приложения":
+            category = self.category.currentText()
+        for id in db.load_id(item, category):
             box = PasswordViewBox(id, self)
             vbox.addWidget(box)
             self.password_boxes.append(box)
@@ -101,8 +111,7 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
         self.setupUi(self)
         self.id = id
         self.main = main
-        # Подключаем базу данных
-        self.db = DataBase()
+        # Подгружаем данные
         self.load_data()
         # Прячем не нужные виджеты
         self.save.setVisible(False)
@@ -113,7 +122,7 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
         self.label_password.setVisible(False)
         self.app_edit.setVisible(False)
         self.category_edit.setVisible(False)
-        # Подключения кнопок
+        # Подключаем кнопки
         self.eye.toggled.connect(self.show_password)
         self.copy.clicked.connect(self.copy_password)
         self.erase.clicked.connect(self.erase_password)
@@ -124,12 +133,12 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
         """Подгружает и выводит списки приложений и категорий"""
         self.app_edit.clear()
         self.category_edit.clear()
-        self.app_edit.addItems(self.db.get_apps())
-        self.category_edit.addItems(self.db.get_categories())
+        self.app_edit.addItems(db.get_apps())
+        self.category_edit.addItems(db.get_categories())
 
     def load_data(self):
         # По id получаем все поля
-        login, password, app, category = self.db.get_entry(self.id)
+        category, app, login, password = db.get_entry(self.id)
         # Выводим информацию
         self.setTitle(app)
         self.category.setText(category)
@@ -144,6 +153,7 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
             self.category_edit.findText(category))
 
     def get_items(self) -> tuple[str, str, str, str]:
+        """Получание данных с виджетов"""
         return tuple(map(str.title,
                          (self.category_edit.currentText(),
                           self.app_edit.currentText(),
@@ -163,6 +173,8 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
         QApplication.clipboard().setText(self.password.text())
 
     def edit_password(self, flag):
+        """При нажатии показывает меню изменения пароля"""
+        # Обновляем данные
         self.load_data()
         self.password.setClearButtonEnabled(flag)
         self.password.setReadOnly(not flag)
@@ -170,6 +182,7 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
             self.setTitle("Редактирование")
 
     def erase_password(self):
+        """Вызывает диалог удаления пароля"""
         answ = QMessageBox.question(self,
                                     'Подтвердждение действия',
                                     f"Действительно хотите удалить запись?\n"
@@ -178,18 +191,22 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
                                     f"Логин: {self.login.text()}",
                                     QMessageBox.Yes, QMessageBox.No)
         if answ == QMessageBox.Yes:
-            self.db.delete(self.id)
+            db.delete(self.id)
             self.deleteLater()
-            self.main.load_filter_list()
+            # Обновляем данные в основном окне
+            self.main.load_data()
 
     def save_changes(self):
-        # Довольно странная проверка на наличие такой же записи в базе
-        #
-        if ((self.db.get_id(self.get_items()) is None) or
-                (self.db.get_id(self.get_items()) == (self.id,))):
-            self.db.overwrite(self.id, self.get_items())
-            self.main.load_filter_list()
+        """Сохраняет изменения"""
+        # Проверяем есть ли запись в бд
+        # Так же проверка по id в случае изменения категории
+        if ((db.get_id(self.get_items()) is None) or
+                (db.get_id(self.get_items()) == self.id)):
+            db.overwrite(self.id, self.get_items())
+            # Обновляем данные основного окна
+            self.main.load_data()
         else:
+            # Вызывает диалог перезаписи пароля
             answ = QMessageBox.question(self,
                                         'Подтвердждение действия',
                                         "Запись с такими данными "
@@ -198,14 +215,18 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
                                         QMessageBox.Yes, QMessageBox.No
                                         )
             if answ == QMessageBox.Yes:
-                self.db.delete(self.db.get_id(self.get_items()))
-                self.db.overwrite(self.id, self.get_items())
-                self.main.load_filter_list()
+                # Удаляет другую запись с такими же данными
+                db.delete(db.get_id(self.get_items()))
+                # Перезаписываем данные в редактируемый box
+                db.overwrite(self.id, self.get_items())
+                # Обновляем данные главного окна
+                self.main.load_data()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("res/icons/icon2"))  # Иконка приложения
+    db = DataBase()
     ex = MainWindow()
     ex.show()
     sys.exit(app.exec())

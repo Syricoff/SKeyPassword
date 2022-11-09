@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/syricoff/PycharmProjects/SKeyPassword/src/res/ui/MainWindow.ui'
+# Form implementation generated from reading ui file '/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/res/ui/MainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
         self.icon_search = QtWidgets.QLabel(self.centralwidget)
         self.icon_search.setStyleSheet("color: white")
         self.icon_search.setText("")
-        self.icon_search.setPixmap(QtGui.QPixmap("/home/syricoff/PycharmProjects/SKeyPassword/src/res/ui/../icons/search_icon.svg"))
+        self.icon_search.setPixmap(QtGui.QPixmap("/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/res/ui/../../../res/icons/search_icon.svg"))
         self.icon_search.setScaledContents(False)
         self.icon_search.setOpenExternalLinks(False)
         self.icon_search.setObjectName("icon_search")
@@ -52,25 +52,22 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.icon_filter = QtWidgets.QLabel(self.centralwidget)
         self.icon_filter.setText("")
-        self.icon_filter.setPixmap(QtGui.QPixmap("/home/syricoff/PycharmProjects/SKeyPassword/src/res/ui/../icons/filter.svg"))
+        self.icon_filter.setPixmap(QtGui.QPixmap("/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/res/ui/../../../res/icons/filter.svg"))
         self.icon_filter.setObjectName("icon_filter")
         self.horizontalLayout_2.addWidget(self.icon_filter)
-        self.filter = QtWidgets.QComboBox(self.centralwidget)
+        self.category = QtWidgets.QComboBox(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.filter.sizePolicy().hasHeightForWidth())
-        self.filter.setSizePolicy(sizePolicy)
-        self.filter.setStyleSheet("text-align: center")
-        self.filter.setEditable(False)
-        self.filter.setObjectName("filter")
-        self.filter.addItem("")
-        self.filter.addItem("")
-        self.horizontalLayout_2.addWidget(self.filter)
+        sizePolicy.setHeightForWidth(self.category.sizePolicy().hasHeightForWidth())
+        self.category.setSizePolicy(sizePolicy)
+        self.category.setStyleSheet("text-align: center")
+        self.category.setObjectName("category")
+        self.horizontalLayout_2.addWidget(self.category)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.types_or_apps_list = QtWidgets.QListWidget(self.centralwidget)
-        self.types_or_apps_list.setObjectName("types_or_apps_list")
-        self.verticalLayout.addWidget(self.types_or_apps_list)
+        self.apps_list = QtWidgets.QListWidget(self.centralwidget)
+        self.apps_list.setObjectName("apps_list")
+        self.verticalLayout.addWidget(self.apps_list)
         self.add_password_button = QtWidgets.QPushButton(self.centralwidget)
         self.add_password_button.setAcceptDrops(False)
         self.add_password_button.setFlat(False)
@@ -105,7 +102,6 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.help.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.filter.setCurrentIndex(0)
         self.add_password_from_menu.triggered.connect(self.add_password_button.click) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -113,8 +109,6 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "SKeyPassword"))
         self.search.setPlaceholderText(_translate("MainWindow", "Поиск"))
-        self.filter.setItemText(0, _translate("MainWindow", "Категории"))
-        self.filter.setItemText(1, _translate("MainWindow", "Приложения"))
         self.add_password_button.setText(_translate("MainWindow", "Добавить пароль"))
         self.menu.setTitle(_translate("MainWindow", "Меню"))
         self.help.setTitle(_translate("MainWindow", "Справка"))
