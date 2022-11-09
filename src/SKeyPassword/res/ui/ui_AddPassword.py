@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/ui/Add_password.ui'
+# Form implementation generated from reading ui file '/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/res/ui/Add_password.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #

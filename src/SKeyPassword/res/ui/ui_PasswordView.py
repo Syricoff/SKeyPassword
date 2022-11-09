@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/ui/PasswordView.ui'
+# Form implementation generated from reading ui file '/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/res/ui/PasswordView.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_PasswordView(object):
     def setupUi(self, PasswordView):
         PasswordView.setObjectName("PasswordView")
-        PasswordView.resize(974, 257)
+        PasswordView.resize(411, 257)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -40,8 +40,9 @@ class Ui_PasswordView(object):
         self.eye = QtWidgets.QPushButton(PasswordView)
         self.eye.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../res/icons/eye-outline.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        icon.addPixmap(QtGui.QPixmap("../res/icons/eye-off-outline.svg"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon.addPixmap(QtGui.QPixmap("/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/res/ui/../../../res/icons/eye-outline.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icons/eye-outline.svg"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon.addPixmap(QtGui.QPixmap(":/icons/eye-off-outline.svg"), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
         self.eye.setIcon(icon)
         self.eye.setCheckable(True)
         self.eye.setObjectName("eye")
@@ -49,7 +50,8 @@ class Ui_PasswordView(object):
         self.copy = QtWidgets.QPushButton(PasswordView)
         self.copy.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("../res/icons/content-copy.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap("/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/res/ui/../../../res/icons/content-copy.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/icons/content-copy.svg"), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
         self.copy.setIcon(icon1)
         self.copy.setObjectName("copy")
         self.password_layout.addWidget(self.copy)
@@ -81,7 +83,7 @@ class Ui_PasswordView(object):
         self.erase.setSizePolicy(sizePolicy)
         self.erase.setText("")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("../res/icons/delete-outline.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(":/icons/delete-outline.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.erase.setIcon(icon2)
         self.erase.setObjectName("erase")
         self.buttons_layout.addWidget(self.erase)
@@ -100,7 +102,8 @@ class Ui_PasswordView(object):
         self.edit.setSizePolicy(sizePolicy)
         self.edit.setText("")
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("../res/icons/pencil-outline.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(":/icons/pencil-outline.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(":/icons/pencil-off-outline.svg"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.edit.setIcon(icon3)
         self.edit.setCheckable(True)
         self.edit.setObjectName("edit")

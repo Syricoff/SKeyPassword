@@ -9,6 +9,7 @@ from DataBase import DataBase
 from dialogs import AddPassword, AboutProgram
 from res.ui.ui_MainWindow import Ui_MainWindow
 from res.ui.ui_PasswordView import Ui_PasswordView
+from res.icons import rc_res
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -225,7 +226,7 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("res/icons/icon2"))  # Иконка приложения
+    app.setWindowIcon(QIcon("/ res/icons/icon2.png"))  # Иконка приложения
     db = DataBase()
     ex = MainWindow()
     ex.show()

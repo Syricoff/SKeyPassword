@@ -4,7 +4,7 @@ from DataBase import DataBase
 from errors import (PasswordError, LoginError, AppError,
                     CategoryError, DataExistError)
 
-from res.ui.ui_Add_password import Ui_Add_password
+from res.ui.ui_AddPassword import Ui_Add_password
 from res.ui.ui_AboutApp import Ui_AboutApp
 
 db = DataBase()

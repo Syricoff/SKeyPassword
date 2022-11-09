@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/syricoff/PycharmProjects/SKeyPassword/ui/AboutApp.ui'
+# Form implementation generated from reading ui file '/home/syricoff/PycharmProjects/SKeyPassword/src/SKeyPassword/res/ui/AboutApp.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -9,7 +9,6 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_AboutApp(object):
     def setupUi(self, AboutApp):
@@ -23,7 +22,7 @@ class Ui_AboutApp(object):
         self.gridLayout.addItem(spacerItem1, 2, 1, 1, 1)
         self.label = QtWidgets.QLabel(AboutApp)
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("../res/icons/icon2.png"))
+        self.label.setPixmap(QtGui.QPixmap(":/icons/icon2.png"))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 1, 0, 3, 1)
