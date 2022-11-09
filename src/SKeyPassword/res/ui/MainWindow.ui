@@ -28,7 +28,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>../../../res/icons/search_icon.svg</pixmap>
+           <pixmap resource="../icons/res.qrc">:/icons/search_icon.svg</pixmap>
           </property>
           <property name="scaledContents">
            <bool>false</bool>
@@ -82,7 +82,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>../../../res/icons/filter.svg</pixmap>
+           <pixmap resource="../icons/res.qrc">:/icons/filter.svg</pixmap>
           </property>
          </widget>
         </item>
@@ -172,7 +172,9 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../icons/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>add_password_from_menu</sender>

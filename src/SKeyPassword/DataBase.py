@@ -19,11 +19,11 @@ class DataBase:
         # Подключаем базу данных
         self.con = sqlite3.connect("passwords.sqlite")
 
-    def __new__(self):
+    def __new__(cls):
         """Синглтон"""
-        if not hasattr(self, 'instance'):
-            self.instance = super(DataBase, self).__new__(self)
-        return self.instance
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(DataBase, cls).__new__(cls)
+        return cls.instance
 
     def change_db(self, path):
         """Подключает пользовательску базу данных"""
