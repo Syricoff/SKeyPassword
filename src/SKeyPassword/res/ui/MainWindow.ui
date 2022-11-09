@@ -28,7 +28,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>../icons/search_icon.svg</pixmap>
+           <pixmap>../../../res/icons/search_icon.svg</pixmap>
           </property>
           <property name="scaledContents">
            <bool>false</bool>
@@ -82,12 +82,12 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>../icons/filter.svg</pixmap>
+           <pixmap>../../../res/icons/filter.svg</pixmap>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="filter">
+         <widget class="QComboBox" name="category">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -97,28 +97,12 @@
           <property name="styleSheet">
            <string notr="true">text-align: center</string>
           </property>
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <item>
-           <property name="text">
-            <string>Категории</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Приложения</string>
-           </property>
-          </item>
          </widget>
         </item>
        </layout>
       </item>
       <item>
-       <widget class="QListWidget" name="types_or_apps_list"/>
+       <widget class="QListWidget" name="apps_list"/>
       </item>
       <item>
        <widget class="QPushButton" name="add_password_button">

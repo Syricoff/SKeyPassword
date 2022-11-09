@@ -4,14 +4,17 @@ from DataBase import DataBase
 from errors import (PasswordError, LoginError, AppError,
                     CategoryError, DataExistError)
 
-from src.res.ui.ui_Add_password import Ui_Add_password
-from src.res.ui.ui_AboutApp import Ui_AboutApp
+from res.ui.ui_Add_password import Ui_Add_password
+from res.ui.ui_AboutApp import Ui_AboutApp
+
+db = DataBase()
 
 
 class AddPassword(QDialog, Ui_Add_password):
-    def __init__(self, main_window):
+    def __init__(self, main):
         QDialog.__init__(self)
         self.setupUi(self)
+        self.main = main
         # Добавляем кнопки сохранить и заменить в buttonBox
         self.save_button = QPushButton("Сохранить")
         self.overwrite_button = QPushButton("Перезаписать")
@@ -22,8 +25,7 @@ class AddPassword(QDialog, Ui_Add_password):
         # Прячем label для вывода ошибок и кнопку перезаписи
         self.errors.hide()
         self.overwrite_button.hide()
-        # Подгружаем базу данных и списоки категорий и приложений
-        self.db = DataBase()
+        # Подгружаем списки категорий и приложений
         self.load_apps_and_categories()
         # Подключения кнопок
         self.save_button.clicked.connect(self.save)
@@ -41,8 +43,8 @@ class AddPassword(QDialog, Ui_Add_password):
 
     def load_apps_and_categories(self):
         """Подгружает и выводит списки приложений и категорий"""
-        self.app.addItems(self.db.get_apps())
-        self.category.addItems(self.db.get_categories())
+        self.app.addItems(db.get_apps())
+        self.category.addItems(db.get_categories())
 
     def validator(self):
         category, app, login, password = self.get_items()
@@ -59,9 +61,9 @@ class AddPassword(QDialog, Ui_Add_password):
         """Добавляет полученные данные в базу данных"""
         try:
             self.validator()  # Проверка на пустые поля
-            if self.db.get_id(self.get_items()) is not None:
+            if db.get_id(self.get_items()) is not None:
                 raise DataExistError("Запись уже существует")
-            self.db.add(self.get_items())
+            db.add(self.get_items())
             self.success("Успешно сохранено")
             return True
         except DataExistError as e:
@@ -85,8 +87,7 @@ class AddPassword(QDialog, Ui_Add_password):
         self.errors.setText(text)
 
     def overwrite(self):
-        self.db.overwrite(self.db.get_id(self.get_items())[0],
-                          self.get_items())
+        db.overwrite(db.get_id(self.get_items()), self.get_items())
         self.overwrite_button.hide()
         self.success('Успешно перезаписано')
 
