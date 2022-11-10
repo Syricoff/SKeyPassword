@@ -64,7 +64,7 @@
            <x>0</x>
            <y>0</y>
            <width>414</width>
-           <height>333</height>
+           <height>357</height>
           </rect>
          </property>
         </widget>
@@ -145,11 +145,6 @@
    </widget>
    <addaction name="menu"/>
    <addaction name="help"/>
-  </widget>
-  <widget class="QStatusBar" name="statusbar">
-   <property name="styleSheet">
-    <string notr="true">font color: red</string>
-   </property>
   </widget>
   <action name="about_program_button">
    <property name="text">
