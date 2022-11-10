@@ -18,6 +18,25 @@ class DataBase:
     def __init__(self):
         # Подключаем базу данных
         self.con = sqlite3.connect("passwords.sqlite")
+        # Создаём таблицы если их нет
+        cur = self.con.cursor()
+        cur.execute("""
+                    CREATE TABLE IF NOT EXISTS "Passwords"
+                    ("id"	INTEGER NOT NULL UNIQUE,
+                    "app_name" TEXT NOT NULL,
+                    "login" TEXT NOT NULL,
+                    "password" TEXT NOT NULL,
+                    "app_type"	INTEGER NOT NULL,
+                    PRIMARY KEY("id" AUTOINCREMENT),
+                    FOREIGN KEY("app_type") REFERENCES "Types"("id"))
+                    """)
+        cur.execute("""
+                    CREATE TABLE IF NOT EXISTS "Types"
+                    ("id"	INTEGER UNIQUE,
+                    "type_name"	TEXT NOT NULL,
+                    PRIMARY KEY("id" AUTOINCREMENT))
+                    """)
+        self.con.commit()
 
     def __new__(cls):
         """Синглтон"""
@@ -27,7 +46,8 @@ class DataBase:
 
     def change_db(self, path):
         """Подключает пользовательску базу данных"""
-        self.con = sqlite3.connect(path)
+        if path:
+            self.con = sqlite3.connect(path)
 
     def is_category(self, category):
         """Проверяет используется ли категория"""

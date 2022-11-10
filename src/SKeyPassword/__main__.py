@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QMessageBox, QFileDialog
 from PyQt5.QtWidgets import QVBoxLayout, QGroupBox, QLineEdit
 
 from DataBase import DataBase
-from dialogs import AddPassword, AboutProgram
+from Dialogs import AddPassword, AboutProgram
 from res.ui.ui_MainWindow import Ui_MainWindow
 from res.ui.ui_PasswordView import Ui_PasswordView
 from res.icons import rc_res
@@ -226,7 +226,7 @@ class PasswordViewBox(QGroupBox, Ui_PasswordView):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("/ res/icons/icon2.png"))  # Иконка приложения
+    app.setWindowIcon(QIcon(":/icons/icon2.png"))  # Иконка приложения
     db = DataBase()
     ex = MainWindow()
     ex.show()
